@@ -1,4 +1,6 @@
-import { productModel } from "./src/models/productModel.ts";
+'use strict';
+
+import { productModel } from '../models/productModel'
 
 export interface policyModel {
     id : string;

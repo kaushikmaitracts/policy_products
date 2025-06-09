@@ -1,5 +1,6 @@
 import * as fs from 'fs'
-import { policy } from './models/policy.ts'
+import { policy } from '../models/policy.ts'
+import { productModel } from '../models/productModel.ts';
 
 /*function formatPolicy(policy) {
     const obj = JSON.parse(policy)
@@ -7,17 +8,23 @@ import { policy } from './models/policy.ts'
 }*/
 
 function getPolicies() {
-    let policies : policy[] = fs.readFileSync('./utils/policies.json')
+    let policies: policy [];
+    const policyData = fs.readFileSync('.utils/policies.json');
+    policies = JSON.parse(JSON.stringify(policyData));
+    //let policiesDtls : policy[] = fs.readFileSync('./utils/policies.json')
     return policies;
   }
   
   function getProducts() {
-    let products = fs.readFileSync('./utils/products.json')
-    return JSON.parse(products)
+    let products: productModel [];
+    const productData = fs.readFileSync('./utils/products.json')
+    products = JSON.parse(JSON.stringify(productData));
+    //let products = fs.readFileSync('./utils/products.json')
+    return products;
   }
   
   function getPolicy(identifier : string) {
-    let policies = getPolicies()
+    /*let policies = getPolicies()
     Array.prototype.myFind = function(obj) {
         return this.filter(function(item) {
             for (var id in obj)
@@ -39,9 +46,9 @@ function getPolicies() {
     console.log("product >> "+productValues)
     policy[0]["productDtls"] = productValues[0]
     console.log(policy)
-    return policy;
+    return policy;*/
   }
 
 
 
-export {formatPolicy}
+export { getPolicies, getProducts}

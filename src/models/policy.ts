@@ -9,4 +9,4 @@ interface policy {
     createdAt : Date
 }
 
-export {policy}
+export { policy }
