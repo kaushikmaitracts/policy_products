@@ -2,7 +2,9 @@ import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import http from 'http';
 //const formatPolicy = require('utils.ts')
-import { getPolicies, getProducts } from './utils/utils.ts';
+import { getPolicies, getProducts, getPolicy } from './utils/utils.ts';
+import { policy } from './models/policy.ts';
+import { productModel } from './models/productModel.ts';
 //const = require('./utils/utils.js')
 //const getPolicy = require('./utils/utils.js')
 //const bodyParser = require('body-parser')
@@ -33,8 +35,8 @@ export const Shutdown = (callback: any) => httpServer && httpServer.close(callba
 
 Main();
 
-function getPolicy(identifier: string) {
-/*let policies = getPolicies()
+/*function getPolicy(identifier: string) {
+let policies = getPolicies()
 Array.prototype.myFind = function(obj) {
 return this.filter(function(item) {
 for (var id in obj)
@@ -56,8 +58,8 @@ let productValues = products
 console.log("product >> "+productValues)
 policy[0]["productDtls"] = productValues[0]
 console.log(policy)
-return policy;*/
-}
+return policy;
+}*/
 
 // API to fetch policy for the given id
 
@@ -85,8 +87,9 @@ res.status(e.status || 500).json(e.message || 'Error occurred during processing'
 
 app.listen(port, () => {
 console.log('Server is up on port '+port)
-getPolicies()
-getProducts()
+const policies : policy [] = getPolicies();
+const products : productModel [] = getProducts();
+getPolicy('pol_010');
 //testFilter()
 })
 
