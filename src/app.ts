@@ -1,16 +1,15 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import http from 'http';
-//const formatPolicy = require('utils.ts')
-import { getPolicies, getProducts, getPolicy } from './utils/utils.ts';
+import { getPolicies, getProducts, getPolicyDtls } from './utils/utils.ts';
 import { policy } from './models/policy.ts';
 import { productModel } from './models/productModel.ts';
-//const = require('./utils/utils.js')
-//const getPolicy = require('./utils/utils.js')
-//const bodyParser = require('body-parser')
+import policyRouter from './router/policyRoutes.ts';
+import { Router } from 'express';
 
 export const app = express();
-export let httpServer: ReturnType<typeof http.createServer>
+
+/*export let httpServer: ReturnType<typeof http.createServer>
 const port = 3000
 //var jsonParser = bodyParser.json()
 
@@ -33,7 +32,7 @@ console.log('Server is listening on port 3000!');
 
 export const Shutdown = (callback: any) => httpServer && httpServer.close(callback);
 
-Main();
+Main();*/
 
 /*function getPolicy(identifier: string) {
 let policies = getPolicies()
@@ -84,14 +83,14 @@ res.status(e.status || 500).json(e.message || 'Error occurred during processing'
 })*/
 
 
-
-app.listen(port, () => {
-console.log('Server is up on port '+port)
-const policies : policy [] = getPolicies();
-const products : productModel [] = getProducts();
-getPolicy('pol_010');
-//testFilter()
+app.use('/policies', policyRouter);
+app.listen(3000, () => {
+    console.log('Server is up on port '+3000)
+    //getPolicyDtls('pol_010');
+    
 })
+
+//app.get('/policies/:id', policyRouter);
 
 function testFilter() {
 /*let jsonArray =

@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import { policy } from '../models/policy.ts'
 import { productModel } from '../models/productModel.ts';
+import { policyModel } from '../models/policyModel.ts';
 
   function getPolicies() : policy [] {
     const policies : policy [] = JSON.parse(fs.readFileSync('../src/utils/policies.json').toString());
@@ -16,7 +17,7 @@ import { productModel } from '../models/productModel.ts';
     return products;
   }
   
-  function getPolicy(identifier : string) {
+  function getPolicyDtls(identifier : string) : policyModel {
     let policies : policy [] = getPolicies();
     let policy : policy | undefined;
     policy = policies.find ( function (obj : policy)  {
@@ -30,33 +31,11 @@ import { productModel } from '../models/productModel.ts';
       return obj.id === productId;
     });
     console.log(product);
-    let policyDtl : policy;
-    // Fill up Policy object attributes from Policy and ProductModel
-    //policyDtl
-    /*Array.prototype.myFind = function(obj) {
-        return this.filter(function(item) {
-            for (var id in obj)
-                if (!(id in item) || obj[id] !== item[id])
-                     return false;
-            return true;
-        });
-    };*/
-    //console.log(policies)
-    //console.log(identifier)
-    /*var policy = policies.myFind({id:identifier});
-    console.log("policy in getPolicy method %%%%%%%  "+policy[0])*/
-    
-    //console.log("productId >> "+policy[0].productId)
-    
-   //console.log(products)
-    /*let productValues = products
-        .filter(item => item.id == productId);
-    console.log("product >> "+productValues)
-    policy[0]["productDtls"] = productValues[0]*/
-    //console.log(policy)
-    return policy;
+    let policyDtl : any;
+    policyDtl = {...policy, productDtls : product};   
+    return policyDtl;
   }
 
 
 
-export { getPolicies, getProducts, getPolicy}
+export { getPolicies, getProducts, getPolicyDtls}

@@ -1,8 +1,24 @@
-const express = require('express')
-const router = express.Router()
-import { policyModel } from './/src/models/policyModel.ts';
+import express, { Router } from 'express';
+import { Request, Response } from 'express';
+import { policyModel } from '../models/policyModel.ts';
+import { getPolicyDtls } from '../utils/utils.ts';
+//import { }
 
-router.get('/policies/:id', (req : RequestInfo, res : policyModel) => {
+const router = Router();
+
+export const getPolicy = (req : Request, res : Response) => {
+  console.log("In GET Endpoint!!!!!!");
+  let identifier : string = req.params.id!;
+  console.log("identifier >> "+identifier);
+  let policy : policyModel = getPolicyDtls(identifier);
+  res.status(200).json(policy);  
+}
+
+export function getPolicies(req: Request, res: Response) {
+  console.log("In getPolicies Handler");
+}
+
+/*router.get('/policies/:id', (req : RequestInfo, res : policyModel) => {
     console.log("In GET Endpoint!!!!!!")
     let identifier : string = req.params.id
     console.log("identifier >> "+identifier)
@@ -11,7 +27,7 @@ router.get('/policies/:id', (req : RequestInfo, res : policyModel) => {
     console.log(policy[0].createdAt)
     console.log(policy[0])
     res.status(200).send(JSON.stringify(policy[0]))
-})
+})*/
 
 /*
 // API to create a new policy
