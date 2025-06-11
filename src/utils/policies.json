@@ -10,24 +10,14 @@
         "createdAt": "2025-01-01T12:00:00Z"
     },
     {
-        "id": "pol_002",
-        "productId": "prod_pet",
-        "customerName": "Bob Johnson",
-        "startDate": "2024-05-15",
-        "endDate": "2025-05-15",
-        "premium": 160,
-        "status": "active",
-        "createdAt": "2024-05-15T08:00:00Z"
-    },
-    {
         "id": "pol_003",
         "productId": "prod_travel",
-        "customerName": "Carla Lewis",
-        "startDate": "2024-06-01",
-        "endDate": "2024-06-15",
-        "premium": 85,
-        "status": "expired",
-        "createdAt": "2024-05-20T14:30:00Z"
+        "customerName": "James Bond",
+        "startDate": "2025-05-20",
+        "endDate": "2025-06-10",
+        "premium": 840,
+        "status": "active",
+        "createdAt": "2025-05-10T13:00:00Z"
     },
     {
         "id": "pol_004",
@@ -41,13 +31,13 @@
     },
     {
         "id": "pol_005",
-        "productId": "prod_motor",
+        "productId": "prod_pet",
         "customerName": "Eva Martinez",
-        "startDate": "2025-03-10",
-        "endDate": "2026-03-10",
-        "premium": 310,
+        "startDate": "2025-05-20",
+        "endDate": "2025-06-10",
+        "premium": 480,
         "status": "active",
-        "createdAt": "2025-03-10T16:00:00Z"
+        "createdAt": "2025-05-10T13:00:00Z"
     },
     {
         "id": "pol_006",
@@ -87,6 +77,35 @@
         "endDate": "2025-06-10",
         "premium": 900,
         "status": "active",
+        "createdAt": "2025-05-10T13:00:00Z"
+    },
+    {
+        "id": "pol_012",
+        "productId": "prod_travel",
+        "customerName": "Carl Bond",
+        "startDate": "2025-05-20",
+        "endDate": "2025-06-10",
+        "premium": 840,
+        "status": "active",
+        "createdAt": "2025-05-10T13:00:00Z"
+    },
+    {
+        "id": "pol_014",
+        "productId": "prod_pet",
+        "customerName": "",
+        "startDate": "2025-05-20",
+        "endDate": "2025-06-10",
+        "premium": 840,
+        "status": "active",
+        "createdAt": "2025-05-10T13:00:00Z"
+    },
+    {
+        "id": "pol_015",
+        "productId": "prod_pet",
+        "customerName": "Carol West",
+        "startDate": "2025-05-20",
+        "endDate": "2025-06-10",
+        "status": "expired",
         "createdAt": "2025-05-10T13:00:00Z"
     }
 ]

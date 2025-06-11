@@ -1,11 +1,22 @@
 import express, { Router } from 'express';
 import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
+import * as fs from 'fs'
 import { policyModel } from '../models/policyModel.ts';
-import { getPolicyDtls } from '../utils/utils.ts';
+import { policy } from '../models/policy.ts';
+import { getPolicyDtls, isRequestAuthenticated, validatePolicy } from '../utils/utils.ts';
+import { getPolicies } from '../utils/utils.ts';
 //import { }
 
 const router = Router();
+type Params = {};
+type ResBody = {};
+type ReqBody = {};
+type ReqQuery = {
+  query : string; 
+}
 
+// API handler to fetch policy details including product for the given policy id
 export const getPolicy = (req : Request, res : Response) => {
   console.log("In GET Endpoint!!!!!!");
   let identifier : string = req.params.id!;
@@ -14,99 +25,122 @@ export const getPolicy = (req : Request, res : Response) => {
   res.status(200).json(policy);  
 }
 
-export function getPolicies(req: Request, res: Response) {
-  console.log("In getPolicies Handler");
+// API handler to fetch policy details for a particular customer 
+export const getPoliciesForCustomer = (req : Request, res : Response) => {
+  try {
+    let customerName : string = req.query.customerName as string;
+    console.log("customerName >> "+customerName);
+    let policies : policy[] = getPolicies();
+    console.log("initial length >> "+policies.length);
+    let customerPolicies = policies
+      .filter(item => item.customerName == customerName);
+    console.log("customerPolicies length >> "+customerPolicies.length);
+    console.log(customerPolicies);
+    if(customerPolicies.length >= 1)
+      res.status(200).send(customerPolicies);
+    else if(customerPolicies.length == 0)
+      res.status(200).send('There are no policies for Customer Name '+customerName);
+  } catch(e) {
+      res.status(500).json({"message": 'Error occurred during processing'});
+  }
 }
 
-/*router.get('/policies/:id', (req : RequestInfo, res : policyModel) => {
-    console.log("In GET Endpoint!!!!!!")
-    let identifier : string = req.params.id
-    console.log("identifier >> "+identifier)
-    let policy = getPolicy(identifier)
-    //formatPolicy(policy)
-    console.log(policy[0].createdAt)
-    console.log(policy[0])
-    res.status(200).send(JSON.stringify(policy[0]))
-})*/
-
-/*
 // API to create a new policy
-app.post('/policies', jsonParser, (req, res) => {
-    try {
-      let policies = getPolicies()
-      console.log("Original Length of policy array >> "+policies.length)
-      let newPolicy = req.body  
-      console.log("req body "+JSON.stringify(newPolicy))  
-      let key = "x-auth"
-      let value = "x-value"
-      const keyVal = req.headers[key]
-      // Authentication check
-      if(keyVal !== value) 
-        res.status(401).json({
-          "message" : "Unauthorized"
-        })    
-      policies.push(newPolicy)
-      console.log("Length of policy after addition >> "+policies.length)
-      fs.writeFile('./utils/policies.json', JSON.stringify(policies, null, 4), function(err) {
-        if(err)
-          res.status(500).send("Error while saving to file")    
-        else
-          res.status(201).json(newPolicy)
-      })
-    } catch(e) {
-        res.status(e.status || 500).json(e.message || 'Error occurred during processing')
-    }
-  })
-  
-  // API to update an existing policy by id
-  app.put('/policies/:id', jsonParser, (req, res) => {
-    let policies = getPolicies()
-    let newPolicyDtls = req.body
-    console.log("newPolicyDtls from Request Body >> "+JSON.stringify(newPolicyDtls))
-    let key = "x-auth"
-    let value = "x-value"
-    const keyVal = req.headers[key]
-    // Authentication check
-    if(keyVal !== value) 
+export const createPolicy = (req : Request, res : Response) => {
+  console.log('IN Create Policy');
+  try {
+    let policies : policy [] = getPolicies();
+    console.log("Original Length of policy array >> "+policies.length)
+    let newPolicy : policy = req.body; 
+    console.log("req body "+JSON.stringify(req.body)); 
+    let key = "x-auth";
+    const keyVal : string = req.headers[key] as string;
+    console.log("keyVal >> "+keyVal)
+    if(! isRequestAuthenticated(keyVal)) {
       res.status(401).json({
-        "message" : "Unauthorized"
-      }) 
-    let identifier = req.params.id
-    let index = -1
-    let filteredPolicy = policies.find(function(item, i){
-        if(item.id === identifier) {
-          index = i;
-          return i;
-        }
+        "message" : "Unauthorized Request"
+      })
+    } 
+    else {   
+      // Validation of policy
+      const result : string = validatePolicy(newPolicy);
+      console.log(result);
+      if(result != 'All validations passed!') {
+        res.status(400).json({"Error Message": result}); 
+      }
+      else {
+        policies.push(newPolicy)
+        console.log("Length of policy after addition >> "+policies.length)
+        fs.writeFile('./utils/policies.json', JSON.stringify(policies, null, 4), function(err) {
+          if(err)
+            res.status(500).send("Error while saving to file")    
+          else
+            res.status(201).json(newPolicy)
+        })
+      }
+    }
+  } catch(e) {
+      res.status(500).json({"message" : 'Error occurred during processing'});
+  }
+}
+  
+// API to update an existing policy by id
+export const modifyPolicy = (req : Request, res : Response) => {
+  let policies : policy [] = getPolicies();
+  let newPolicyDtls : policy = req.body;
+  console.log("newPolicyDtls from Request Body >> "+JSON.stringify(newPolicyDtls, null, 4))  
+  let key = "x-auth";
+  const keyVal : string = req.headers[key] as string;
+  if(! isRequestAuthenticated(keyVal)) {
+    res.status(401).json({
+      "message" : "Unauthorized Request"
+    })
+  } 
+  else {
+    let identifier : string = req.params.id as string;
+    console.log("identifier >> "+ identifier);
+    let index : number = -1;
+    let filteredPolicy : policy | undefined;
+    filteredPolicy = policies.find(function(item : policy, i : number){
+      if(item.id == identifier) {
+        index = i;
+        return i;
+      }
     })
     if(index == -1) {
-      console.log('Inside IF LOOP')
       res.status(400).send("Policy does not exist for given identifier")
     }
     else {
-      console.log("identifier >> "+identifier)
-      console.log("filteredPolicy >> "+filteredPolicy)
-      console.log(index, filteredPolicy)
-      const newPolicy = {...filteredPolicy, ...newPolicyDtls}
-      policies[index] = newPolicy
+      const newPolicy = {...filteredPolicy, ...newPolicyDtls};
+      policies[index] = newPolicy;
       fs.writeFile('./utils/policies.json', JSON.stringify(policies, null, 4), function(err) {
         if(err)
           res.status(500).send("Error while saving to file")    
       })
-      console.log("newPolicy using index >> "+JSON.stringify(policies[index]))
       res.status(201).json(newPolicy)
     }
-  })
-  
-  // API to delete an existing policy by id
-  app.delete('/policies/:id', (req, res) => {
-    try {
-      let policies = getPolicies()
-      console.log("Length of policies array before deletion >> "+policies.length)
-      let identifier = req.params.id
-      console.log("identifier >> "+identifier)
+  }
+}
+
+// API to delete an existing policy by id
+export const deletePolicy= (req : Request, res : Response) => {
+  try {
+    let policies : policy [] = getPolicies();
+    console.log("Length of policies array before deletion >> "+policies.length)
+    let identifier : string = req.params.id as string;
+    console.log("identifier >> "+identifier)
+    let key = "x-auth";
+    const keyVal : string = req.headers[key] as string;
+    if(! isRequestAuthenticated(keyVal)) {
+      res.status(401).json({
+        "message" : "Unauthorized Request"
+      })
+    } 
+    else {
       // index to be found
-      let filteredPolicy = policies.find(function(item, i){
+      let index : number = -1;
+      let filteredPolicy : policy | undefined;
+      filteredPolicy = policies.find(function(item, i){
         if(item.id === identifier) {
           index = i;
           return i;
@@ -122,8 +156,9 @@ app.post('/policies', jsonParser, (req, res) => {
           res.status(500).send("Error while writing to file")    
       })
       res.status(200).send("Policy deleted")
-    } catch(e) {
-        res.status(e.status || 500).json(e.message || 'Error occurred during processing')
     }
-  })
-*/
+  } catch(e) {
+      res.status(500).json({"message" : 'Error occurred during processing'})
+  }
+}
+

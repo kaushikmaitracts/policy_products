@@ -60,29 +60,11 @@ console.log(policy)
 return policy;
 }*/
 
-// API to fetch policy for the given id
 
 
-// API to fetch all policies for a paricular customer
-/*app.get('/policies', (req, res) => {
-try {
-let customerName = req.query.customerName
-let policies = getPolicies()
-console.log("initial length >> "+policies.length)
-let customerPolicies = policies
-.filter(item => item.customerName == customerName);
-console.log("length >> "+customerPolicies.length)
-console.log(customerPolicies)
-if(customerPolicies.length >= 1)
-res.status(200).send(customerPolicies)
-else
-res.status(200).send('There are no policies for Customer Name '+customerName)
-} catch(e) {
-res.status(e.status || 500).json(e.message || 'Error occurred during processing')
-}
-})*/
 
-
+//app.use(express.urlencoded({extended : true}));
+app.use(express.json());
 app.use('/policies', policyRouter);
 app.listen(3000, () => {
     console.log('Server is up on port '+3000)
@@ -90,7 +72,7 @@ app.listen(3000, () => {
     
 })
 
-//app.get('/policies/:id', policyRouter);
+
 
 function testFilter() {
 /*let jsonArray =
