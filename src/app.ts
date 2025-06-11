@@ -60,16 +60,10 @@ console.log(policy)
 return policy;
 }*/
 
-
-
-
-//app.use(express.urlencoded({extended : true}));
 app.use(express.json());
 app.use('/policies', policyRouter);
 app.listen(3000, () => {
-    console.log('Server is up on port '+3000)
-    //getPolicyDtls('pol_010');
-    
+    console.log('Server is up on port '+3000)    
 })
 
 

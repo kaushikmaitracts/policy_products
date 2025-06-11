@@ -4,7 +4,7 @@ import { createPolicy, getPolicy, getPoliciesForCustomer, modifyPolicy, deletePo
 const policyRouter = Router();
 
 policyRouter.get('/:id', getPolicy);
-policyRouter.get('/customerName=<name>', getPoliciesForCustomer);
+policyRouter.get('/', getPoliciesForCustomer);
 policyRouter.post('', createPolicy);
 policyRouter.put('/:id', modifyPolicy);
 policyRouter.delete('/:id', deletePolicy);

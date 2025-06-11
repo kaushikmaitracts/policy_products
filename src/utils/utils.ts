@@ -1,15 +1,15 @@
 import * as fs from 'fs'
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 import { policy } from '../models/policy.ts'
 import { productModel } from '../models/productModel.ts';
 import { policyModel } from '../models/policyModel.ts';
 
   let policies : policy [];
   let products : productModel [];
-  dotenv.config();
+  //dotenv.config();
+  export type policyFull = policy & { productDtls : productModel | undefined}
 
   function getPolicies() : policy [] {
-    //console.log(POLICIES_JSON_FILE);
     policies = JSON.parse(fs.readFileSync('../src/utils/policies.json').toString());
     return policies;
   }
@@ -19,7 +19,7 @@ import { policyModel } from '../models/policyModel.ts';
     return products;
   }
   
-  function getPolicyDtls(identifier : string) : policyModel {
+  function getPolicyDtls(identifier : string) : policyFull {
     policies = getPolicies();
     let policy : policy | undefined;
     policy = policies.find ( function (obj : policy)  {
@@ -32,8 +32,8 @@ import { policyModel } from '../models/policyModel.ts';
     products = getProducts();
     let product : productModel | undefined;
     product = findProduct(productId ?? "");
-    let policyDtl : any;
-    policyDtl = {...policy, productDtls : product};   
+    let policyDtl;
+    policyDtl = {...policy, productDtls : product} as policyFull;   
     return policyDtl;
   }
 
@@ -62,9 +62,7 @@ import { policyModel } from '../models/policyModel.ts';
 
   function isRequestAuthenticated(requestKey : string) : boolean {
     const apiKey = process.env.API_KEY;
-    const apiValue = process.env.API_VALUE;
-    console.log("apiKey >> "+apiKey);
-    console.log("apiValue >> "+apiValue);
+    const apiValue = 'x-value';
     if(requestKey == apiValue) 
       return true;
     else 
